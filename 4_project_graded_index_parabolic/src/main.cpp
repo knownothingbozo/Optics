@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 	f.output_hdf5(Dielectric, gv.surroundings());
 
 	while (f.time() < 35.0) {
- 		if (f.time() > 30.0) f.output_hdf5(Ey, gv.surroundings());
+ 		if (f.time() > 34.5) f.output_hdf5(Ey, gv.surroundings());
  		f.step();
 	}
 
