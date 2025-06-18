@@ -11,9 +11,9 @@ const double t = 1.0 / c;
 const double ns = 1e-9 / t;
 
 // Multimode fiber
-const double x_max = 750.0; //500.0;
-const double y_max = 125.0; //125.0;
-const double coreD = 50.0; // 50.0;
+const double x_max = 75.0; //750.0;
+const double y_max = 12.0; //125.0;
+const double coreD = 5.0; // 50.0;
 const double core_max = (y_max+coreD)/2;
 const double core_min = (y_max-coreD)/2;
 
@@ -54,6 +54,24 @@ double eps(const vec &p) {
 	}
 }
 
+double eps2(const vec &p) {
+//	if ( p.x() < f1 + offset + 0.1 && p.x() > f1 + offset - 0.1 ) {
+//		return pow(na,2);
+//	}
+	if ( p.y() <= core_max && p.y() >= core_min && p.x() >= f1 + offset ) {
+		return pow(n0,2)-(pow(n0,2)-pow(n1,2))*pow(p.y()- y_max/2.0,2)/pow(coreD/2.0,2);
+	}
+	else if ( p.x() >= f1 + offset ) {
+		return pow(n1, 2);
+	}
+	if ( pow(p.x() + b, 2)+pow(p.y()-y_max/2.0,2) < pow(lens_R,2) ) {
+		return pow(n1,2);
+	}
+	else if ( pow(p.x() + b, 2)+pow(p.y()-y_max/2.0,2) >= pow(lens_R,2) ) {
+		return pow(n0,2);
+	}
+}
+
 
 int main(int argc, char **argv) {
 	initialize mpi(argc, argv);
@@ -64,10 +82,15 @@ int main(int argc, char **argv) {
 	const grid_volume gv = vol2d(x_max, y_max, amicron);
 	//symmetry sym = mirror(Y, gv);
 
+	// First generate Dielectric map with corrected values so we can visually differentiate the waveguidegrading
+	structure s0(gv, eps2, pml(pml_thickness)); //, sym, pml_layers);
+	fields f0(&s0);
+
+	f0.output_hdf5(Dielectric, gv.surroundings());
+	
+	// Then make a new object with the actual values
 	structure s(gv, eps, pml(pml_thickness)); //, sym, pml_layers);
 	fields f(&s);
-
-	
 
 	gaussian_src_time src(freq, fwidth, 0.0, ns);
 
@@ -82,12 +105,11 @@ int main(int argc, char **argv) {
 
 	//h5file* fileptr = &ofile;
 
-	f.output_hdf5(Dielectric, gv.surroundings());
 
 	int count = 0;
 
-	while (f.time() <= 1201.0) {
- 		if (f.time() > 0.0 && count % 100 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
+	while (f.time() <= 11.0) {
+ 		if (f.time() > 0.0 && count % 20 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
  		count++;
 		f.step();
 	}
