@@ -1,0 +1,28 @@
+#!/bin/zsh
+
+count=0
+
+POL="y"
+
+DATA_DIR="build/data"
+
+FILES=($DATA_DIR/e$POL*.h5)
+
+for file in $FILES
+do
+	echo -ne "Converting PNG $((count + 1)) / ${#FILES[@]} \r"
+	h5topng -Z -o $DATA_DIR/"overlay-${(l:5::0:)count}.png" -c RdBu "$file":e$POL.r -A $DATA_DIR/eps*.h5 -a yellow:0.8
+	((count ++))
+done
+echo
+
+ls $DATA_DIR/*.png > $DATA_DIR/filelist.txt
+
+GIF_DIR="build/data/gifs"
+if ! [ -d "$GIF_DIR" ]; then
+	mkdir $GIF_DIR
+fi
+
+
+echo "Making gif"
+magick -delay 5 -loop 0 @$DATA_DIR/filelist.txt $GIF_DIR/$(date +%d.%m.%y-%H:%M:%S).gif
