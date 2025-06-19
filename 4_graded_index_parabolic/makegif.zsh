@@ -8,7 +8,8 @@ DATA_DIR="build/data"
 
 FILES=($DATA_DIR/e$POL*.h5)
 
-python make_pngs.py
+PYTHON_EXEC="/home/caleb/Jupyter Lab/bin/python"
+$PYTHON_EXEC make_pngs.py
 
 ls $DATA_DIR/*.png > $DATA_DIR/filelist.txt
 
