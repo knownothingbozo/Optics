@@ -11,7 +11,7 @@ const double t = 1.0 / c;
 const double ns = 1e-9 / t;
 
 // Multimode fiber
-const double x_max = 750.0; //750.0;
+const double x_max = 250.0; //750.0;
 const double y_max = 12.0; //125.0;
 const double coreD = 5.0; // 50.0;
 const double core_max = (y_max+coreD)/2;
@@ -32,7 +32,8 @@ const double na = n0*(1.0+2.0*m*tan(asin(sqrt(pow(n0,2)-pow(n1,2)))));
 const double offset = lens_R*(1-cos(asin(y_max/(2.0*lens_R)))) + 2.0;
 const double offset2 = lens_R*(1-cos(asin(line_src_h/(2.0*lens_R)))) + 2.0;
 const double b = lens_R - offset;
-const double f1 = n0*lens_R/(na-n0)-offset2;
+//const double f1 = n0*lens_R/(na-n0)-offset2;
+const double f1 = y_max /2 /tan(asin(sqrt(pow(n0,2)-pow(n1,2)))) - offset2;
 
 const double pml_thickness = 0.5;
 
@@ -110,7 +111,7 @@ int main(int argc, char **argv) {
 
 	int count = 0;
 
-	while (f.time() <= 1001.0) {
+	while (f.time() <= 201.0) {
  		if (f.time() > 0.0 && count % 20 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
  		count++;
 		f.step();
