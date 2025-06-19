@@ -11,7 +11,7 @@ const double t = 1.0 / c;
 const double ns = 1e-9 / t;
 
 // Multimode fiber
-const double x_max = 75.0; //750.0;
+const double x_max = 750.0; //750.0;
 const double y_max = 12.0; //125.0;
 const double coreD = 5.0; // 50.0;
 const double core_max = (y_max+coreD)/2;
@@ -52,6 +52,7 @@ double eps(const vec &p) {
 	else if ( pow(p.x() + b, 2)+pow(p.y()-y_max/2.0,2) >= pow(lens_R,2) ) {
 		return pow(n0,2);
 	}
+	else { return 0; }
 }
 
 double eps2(const vec &p) {
@@ -70,6 +71,7 @@ double eps2(const vec &p) {
 	else if ( pow(p.x() + b, 2)+pow(p.y()-y_max/2.0,2) >= pow(lens_R,2) ) {
 		return pow(n0,2);
 	}
+	else { return 0; }
 }
 
 
@@ -108,7 +110,7 @@ int main(int argc, char **argv) {
 
 	int count = 0;
 
-	while (f.time() <= 11.0) {
+	while (f.time() <= 1001.0) {
  		if (f.time() > 0.0 && count % 20 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
  		count++;
 		f.step();
