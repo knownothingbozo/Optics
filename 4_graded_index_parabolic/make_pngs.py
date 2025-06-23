@@ -11,9 +11,10 @@ p = Path('build/data')
 eps = list(p.glob('eps*.h5'))
 files = list(p.glob('e{0}*.h5'.format(pol)))
 
-E_max_arr = np.zeros(20)
-E_min_arr = np.zeros(20)
-for i in range(20):
+sample = 7
+E_max_arr = np.zeros(sample)
+E_min_arr = np.zeros(sample)
+for i in range(sample):
     f = h5py.File(files[i], 'r')
     dset = f['e{0}.r'.format(pol)]
     E_max_arr[i] = np.max(dset)

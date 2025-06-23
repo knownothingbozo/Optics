@@ -12,12 +12,10 @@ using namespace meep;
 
 const double pml_thickness = 2.0;
 
-const double c = 29979245;
-const double t = 1.0 / c;
-const double ns = 1e-9 / t;
+const double dt = 1.3*4;
 
 // Multimode fiber
-const double x_max = 750.0; //750.0;
+const double x_max = 800; //750.0;
 const double y_max = 125.0; //125.0;
 const double coreD = 50.0; // 50.0;
 const double core_max = (y_max+coreD)/2;
@@ -133,7 +131,7 @@ int main(int argc, char **argv) {
 
 	fields f(&s);
 
-	gaussian_src_time src(freq, fwidth, 0.0, ns);
+	gaussian_src_time src(freq, fwidth, 0.0, dt);
 
 	//f.add_point_source(Ey, src, vec(1.0 , y_max/2.0));
 
@@ -151,7 +149,7 @@ int main(int argc, char **argv) {
 	int count = 0;
 
 	while (f.time() <= 1201.0) {
- 		if (f.time() > 0.0 && count % 200 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
+ 		if (f.time() > 0.0 && count % 60 == 0 ) f.output_hdf5(Ey, gv.surroundings()); //, fileptr, true);
  		count++;
 		f.step();
 	}
